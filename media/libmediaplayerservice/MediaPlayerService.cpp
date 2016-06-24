@@ -1220,6 +1220,18 @@ status_t MediaPlayerService::Client::setVolume(float leftVolume, float rightVolu
                   reinterpret_cast<MediaPlayerHWInterface*>(p.get());
           return hwp->setVolume(leftVolume, rightVolume);
       } else {
+          {
+              ALOGV("Set amlogic player Volume(%f, %f)",leftVolume, rightVolume);
+              Parcel tmprequest;
+              Parcel reply;
+              tmprequest.setDataPosition(0);
+              tmprequest.writeInt32(INVOKE_ID_SET_TRACK_VOLUME);
+              tmprequest.writeFloat(leftVolume);
+              tmprequest.writeFloat(rightVolume);
+              tmprequest.setDataPosition(0);
+              p->invoke(tmprequest,&reply);
+          }
+          ALOGV("Set android track Volume(%f, %f)",leftVolume, rightVolume);
           if (mAudioOutput != 0) mAudioOutput->setVolume(leftVolume, rightVolume);
           return NO_ERROR;
       }
