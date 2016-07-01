@@ -2135,6 +2135,13 @@ status_t OMXCodec::allocateOutputBuffersFromNativeWindow() {
     if (!meta->findInt32(kKeyRotation, &rotationDegrees)) {
         rotationDegrees = 0;
     }
+    if (rotationDegrees != 0)  {
+        OMX_U32 rotation= rotationDegrees;
+        OMX_INDEXTYPE index;
+        if (mOMX->getExtensionIndex(mNode,"OMX.amlogic.android.index.Rotation",&index) == OK) {
+            mOMX->setParameter(mNode, index, &rotation, sizeof(rotation));
+        }
+    }
 
     // Set up the native window.
     OMX_U32 usage = 0;
