@@ -54,6 +54,7 @@ enum media_event_type {
     MEDIA_INFO              = 200,
     MEDIA_SUBTITLE_DATA     = 201,
     MEDIA_META_DATA         = 202,
+    MEDIA_BLURAY_INFO       = 203,
 };
 
 // Generic error codes for the media player framework.  Errors are fatal, the
@@ -147,6 +148,7 @@ enum media_info_type {
     MEDIA_INFO_AMLOGIC_SHOW_AUDIO_LIMITED = MEDIA_INFO_AMLOGIC_BASE+8,
     MEDIA_INFO_AMLOGIC_SHOW_DTS_MULASSETHINT=MEDIA_INFO_AMLOGIC_BASE+9,
     MEDIA_INFO_AMLOGIC_SHOW_DTS_HPS_NOTSUPPORT=MEDIA_INFO_AMLOGIC_BASE+10,
+    MEDIA_INFO_AMLOGIC_BLURAY_STREAM_PATH = MEDIA_INFO_AMLOGIC_BASE+11,
 
     //notify java app the download bitrate
     MEDIA_INFO_DOWNLOAD_BITRATE = 0x9001,
