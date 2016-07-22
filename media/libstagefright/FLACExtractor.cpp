@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#define LOG_NDEBUG 0
+//#define LOG_NDEBUG 0
 #define LOG_TAG "FLACExtractor"
 #include <utils/Log.h>
 
@@ -691,7 +691,7 @@ MediaBuffer *FLACParser::readBuffer(bool doSeek, FLAC__uint64 sample)
     CHECK(bufferSize <= mMaxBufferSize);
     short *data = (short *) buffer->data();
     buffer->set_range(0, bufferSize);
-    if (doSeek) {
+    if (doSeek && sample) {
           //solve seek noise becase of buffer no explicit flush
           ALOGI("seek skip this frame!!");
     }else{
