@@ -40,6 +40,7 @@ public:
     int init();
 
     int getCameraInfo(int cameraId, struct camera_info *info);
+    int setCameraInfo(int cameraId, bool isCameraAttach);
     int getNumberOfCameras(void);
     int open(const char* id, struct hw_device_t** device);
     int openLegacy(const char* id, uint32_t halVersion, struct hw_device_t** device);
@@ -60,6 +61,7 @@ private:
     status_t filterOpenErrorCode(status_t err);
 
     camera_module_t *mModule;
+    CameraMetadata mCameraMeta;
     KeyedVector<int, camera_info> mCameraInfoMap;
     Mutex mCameraInfoLock;
 };

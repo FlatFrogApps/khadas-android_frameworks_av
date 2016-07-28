@@ -216,17 +216,32 @@ int CameraModule::getCameraInfo(int cameraId, struct camera_info *info) {
             *info = rawInfo;
             return ret;
         }
-        CameraMetadata m;
-        m = rawInfo.static_camera_characteristics;
-        deriveCameraCharacteristicsKeys(rawInfo.device_version, m);
+        mCameraMeta = CameraMetadata((camera_metadata_t*)rawInfo.static_camera_characteristics);
+        deriveCameraCharacteristicsKeys(rawInfo.device_version, mCameraMeta);
         cameraInfo = rawInfo;
-        cameraInfo.static_camera_characteristics = m.release();
+        cameraInfo.static_camera_characteristics = mCameraMeta.release();
+        ALOGD("%s: cameraId%d build new Metadata %p", __FUNCTION__, cameraId, cameraInfo.static_camera_characteristics);
         index = mCameraInfoMap.add(cameraId, cameraInfo);
     }
 
     assert(index != NAME_NOT_FOUND);
     // return the cached camera info
     *info = mCameraInfoMap[index];
+    return OK;
+}
+
+int CameraModule::setCameraInfo(int cameraId, bool isCameraAttach) {
+    if (isCameraAttach) {
+        ALOGD("Camera %d is attached!", cameraId);
+    } else {
+        ALOGD("Camera %d is unattached!", cameraId);
+        ssize_t index = mCameraInfoMap.indexOfKey(cameraId);
+        if (index == NAME_NOT_FOUND) {
+            ALOGE("Camera %d is unattached, but CameraInfoMap is null!", cameraId);
+        } else {
+            mCameraInfoMap.removeItem(cameraId);
+        }
+    }
     return OK;
 }
 

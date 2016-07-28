@@ -1576,6 +1576,10 @@ void CameraService::usbCameraAttach(bool isAttach){
         CameraService::pingCameraServiceProxy();
     }
 
+    if (mNumberOfCameras == 0) {
+        mModule->setCameraInfo(0, false);
+    }
+
     ALOGI("USB camera attach isAttach:%d, number:%d", isAttach, mNumberOfCameras);
 }
 
