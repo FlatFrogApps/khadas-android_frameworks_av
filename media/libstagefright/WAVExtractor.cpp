@@ -494,7 +494,8 @@ status_t WAVSource::read(
     } else {
         // read only integral amounts of audio unit frames.
         const size_t inputUnitFrameSize = mNumChannels * mBitsPerSample / 8;
-        maxBytesToRead -= maxBytesToRead % inputUnitFrameSize;
+        if (inputUnitFrameSize != 0)
+            maxBytesToRead -= maxBytesToRead % inputUnitFrameSize;
     }
 
     ssize_t n = mDataSource->readAt(
