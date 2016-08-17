@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-//#define LOG_NDEBUG 0
+#define LOG_NDEBUG 0
 #define LOG_TAG "MediaCodec"
 #include <inttypes.h>
 
@@ -52,7 +52,28 @@
 #include <utils/Log.h>
 #include <utils/Singleton.h>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+
 namespace android {
+
+static int read_sysfs_int(const char *path) {
+    int fd;
+    int val = 0;
+    char  bcmd[16];
+    fd = open(path, O_RDONLY);
+    if (fd >= 0) {
+        read(fd, bcmd, sizeof(bcmd));
+        val = strtol(bcmd, NULL, 10);
+        close(fd);
+    } else {
+        ALOGD("unable to open file %s,err: %s", path, strerror(errno));
+    }
+    return val;
+}
+
 
 static int64_t getId(sp<IResourceManagerClient> client) {
     return (int64_t) client.get();
@@ -436,7 +457,6 @@ status_t MediaCodec::configure(
             mRotationDegrees = 0;
         }
     }
-
     msg->setMessage("format", format);
     msg->setInt32("flags", flags);
     msg->setObject("surface", surface);
@@ -742,7 +762,6 @@ status_t MediaCodec::dequeueOutputBuffer(
         int64_t timeoutUs) {
     sp<AMessage> msg = new AMessage(kWhatDequeueOutputBuffer, this);
     msg->setInt64("timeoutUs", timeoutUs);
-
     sp<AMessage> response;
     status_t err;
     if ((err = PostAndAwaitResponse(msg, &response)) != OK) {
@@ -2007,7 +2026,13 @@ void MediaCodec::onMessageReceived(const sp<AMessage> &msg) {
                 PostReplyWithError(replyID, -EAGAIN);
                 break;
             }
-
+            if (timeoutUs > 100000 && mComponentName == AString("OMX.amlogic.vp9.decoder.awesome")) {
+                int nokeyframe = read_sysfs_int("/sys/module/amvdec_vp9/parameters/on_no_keyframe_skiped");
+                if (nokeyframe) {
+                    timeoutUs = 10000; /*no keyframe found, less wait for fast out.*/
+                    ALOGD("No keyframe found, less wait less time\n");
+                }
+            }
             mFlags |= kFlagDequeueOutputPending;
             mDequeueOutputReplyID = replyID;
 
