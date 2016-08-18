@@ -1854,7 +1854,11 @@ status_t AudioPolicyManager::setStreamVolumeIndex(audio_stream_type_t stream,
     if (!audio_is_output_device(device)) {
         return BAD_VALUE;
     }
-
+    if ((stream == AUDIO_STREAM_SYSTEM) || (stream == AUDIO_STREAM_RING) ||
+    (stream == AUDIO_STREAM_NOTIFICATION ) || (stream == AUDIO_STREAM_ENFORCED_AUDIBLE))
+    {
+        index = index*2;
+    }
     // Force max volume if stream cannot be muted
     if (!mStreams.canBeMuted(stream)) index = mStreams.valueFor(stream).getVolumeIndexMax();
 
