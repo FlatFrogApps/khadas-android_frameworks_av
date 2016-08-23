@@ -365,6 +365,10 @@ sp<IMediaPlayer> MediaPlayerService::create(const sp<IMediaPlayerClient>& client
     ALOGV("Create new client(%d) from pid %d, uid %d, ", connId, pid,
          IPCThreadState::self()->getCallingUid());
 
+    char str_pid[8];
+    sprintf(str_pid, "%d", pid);
+    property_set("media.player.pid", str_pid);
+
     wp<Client> w = c;
     {
         Mutex::Autolock lock(mLock);
