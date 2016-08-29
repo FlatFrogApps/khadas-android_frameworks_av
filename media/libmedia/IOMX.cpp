@@ -700,8 +700,10 @@ status_t BnOMX::onTransact(
             size_t pageSize = 0;
             size_t allocSize = 0;
             bool isUsageBits = (index == (OMX_INDEXTYPE) OMX_IndexParamConsumerUsageBits);
+            bool isVendorBits = ((index > OMX_IndexVendorStartUnused) && (index < OMX_IndexMax));
+
             if ((isUsageBits && size < 4) ||
-                    (!isUsageBits && code != SET_INTERNAL_OPTION && size < 8)) {
+                    (!isUsageBits && code != SET_INTERNAL_OPTION && size < 8 && !isVendorBits)) {
                 // we expect the structure to contain at least the size and
                 // version, 8 bytes total
                 ALOGE("b/27207275 (%zu) (%d/%d)", size, int(index), int(code));
@@ -725,6 +727,7 @@ status_t BnOMX::onTransact(
                         OMX_U32 declaredSize = *(OMX_U32*)params;
                         if (code != SET_INTERNAL_OPTION &&
                                 index != (OMX_INDEXTYPE) OMX_IndexParamConsumerUsageBits &&
+                                !isVendorBits &&
                                 declaredSize > size) {
                             // the buffer says it's bigger than it actually is
                             ALOGE("b/27207275 (%u/%zu)", declaredSize, size);
