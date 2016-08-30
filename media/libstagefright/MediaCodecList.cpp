@@ -177,6 +177,9 @@ MediaCodecList::MediaCodecList()
     parseTopLevelXMLFile("/etc/media_codecs.xml");
     parseTopLevelXMLFile("/etc/media_codecs_performance.xml", true/* ignore_errors */);
     parseTopLevelXMLFile(kProfilingResults, true/* ignore_errors */);
+#ifdef USE_MEDIACODEC_SECURE
+    parseTopLevelXMLFile("/etc/media_codecs_secure.xml", true/* ignore_errors */);
+#endif
 }
 
 void MediaCodecList::parseTopLevelXMLFile(const char *codecs_xml, bool ignore_errors) {

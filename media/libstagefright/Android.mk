@@ -145,6 +145,10 @@ LOCAL_C_INCLUDES+= \
 	$(TOP)/frameworks/av/media/libstagefright/include  \
 	$(TOP)/frameworks/av/media/libmediaplayerservice  \
 
+ifeq ($(USE_MEDIACODEC_SECURE), true)
+LOCAL_CFLAGS += -DUSE_MEDIACODEC_SECURE
+endif
+
 
 ####	$(TOP)/external/ffmpeg
 
