@@ -1037,7 +1037,7 @@ status_t AudioTrack::getPosition(uint32_t *position)
     }
 
     AutoMutex lock(mLock);
-    if (isOffloaded_l()) {
+    if (isOffloaded_l() || isDirect_l()) {
         uint32_t dspFrames = 0;
 
         if (isOffloaded_l() && ((mState == STATE_PAUSED) || (mState == STATE_PAUSED_STOPPING))) {
