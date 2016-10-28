@@ -4603,7 +4603,7 @@ AudioFlinger::PlaybackThread::mixer_state AudioFlinger::DirectOutputThread::prep
             && (track->mRetryCount > 1) && audio_is_linear_pcm(mFormat)) {
             minFrames = mNormalFrameCount;
         } else {
-            //minFrames = 1;
+            minFrames = 64;
         }
             ALOGVV("12 track %d s=%08x [OK],min %d,ready %d", track->name(), cblk->mServer,minFrames,track->framesReady() );
             ALOGVV("34 stop %d,paused %d, terminated %d,stop2 %d,track->isReady() %d \n",track->isStopped(),track->isPaused(),track->isTerminated(),track->isStopping_2(),track->isReady());
