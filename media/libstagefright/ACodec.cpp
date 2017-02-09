@@ -2366,12 +2366,14 @@ status_t ACodec::configureCodec(
                 || !msg->findInt32("sample-rate", &sampleRate)
                 || !msg->findInt32("bit-rate", &bitRate)
                 || !msg->findInt32("block-align", &blockAlign)
-                || !msg->findInt32("codec-id", &codecId)
-                || !msg->findInt32("extradata-size", &extradataSize)
-                || !msg->findBuffer("extra-data", &extraBuf)) {
+                || !msg->findInt32("codec-id", &codecId)) {
             ALOGE("ffmpeg audio has invalid parameters!");
             err = INVALID_OPERATION;
         } else {
+            extradataSize = 0;
+            if (msg->findInt32("extradata-size", &extradataSize) && extradataSize > 0) {
+                CHECK(msg->findBuffer("extra-data", &extraBuf));
+            }
             err = setupFFmpegCodec(encoder, numChannels, sampleRate, bitRate,
                                    blockAlign, codecId, extradataSize, extraBuf);
         }

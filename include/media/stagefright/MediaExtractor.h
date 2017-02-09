@@ -34,6 +34,10 @@ public:
     static sp<MediaExtractor> CreateFromService(
             const sp<DataSource> &source, const char *mime = NULL);
 
+#ifdef WITH_AMLOGIC_MEDIA_EX_SUPPORT
+    static sp<MediaExtractor> CreateFromServiceEx(
+            const sp<DataSource> &source, const char *mime = NULL);
+#endif
     virtual size_t countTracks() = 0;
     virtual sp<IMediaSource> getTrack(size_t index) = 0;
 
