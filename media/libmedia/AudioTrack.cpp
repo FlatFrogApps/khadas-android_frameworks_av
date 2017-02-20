@@ -400,10 +400,10 @@ status_t AudioTrack::set(
              //here to workaround the dts pause issue when start to play,seems kodi apk have some avsync issue
              // with different audiotrack buffer size
             //TODO,need dig more
-             size_t min_frameCount = 0;
-             getMinFrameCount(&min_frameCount,streamType,sampleRate);
-             if (frameCount >  min_frameCount*2)
-                 frameCount =  min_frameCount*2;
+             //size_t min_frameCount = 0;
+             //getMinFrameCount(&min_frameCount,streamType,sampleRate);
+             //if (frameCount >  min_frameCount*2)
+                 //frameCount =  min_frameCount*2;
           }
           ALOGI("convert format IEC61937 to 0x%x\n",format);
     }
