@@ -96,6 +96,7 @@ const OutputFlagConverter::Table OutputFlagConverter::mTable[] = {
     MAKE_STRING_FROM_ENUM(AUDIO_OUTPUT_FLAG_TTS),
     MAKE_STRING_FROM_ENUM(AUDIO_OUTPUT_FLAG_RAW),
     MAKE_STRING_FROM_ENUM(AUDIO_OUTPUT_FLAG_SYNC),
+    MAKE_STRING_FROM_ENUM(AUDIO_OUTPUT_FLAG_IEC958_NONAUDIO),
 };
 template<>
 const size_t OutputFlagConverter::mSize = sizeof(OutputFlagConverter::mTable) /
