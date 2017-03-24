@@ -210,6 +210,9 @@ enum {
     kKeyExtraDataSize     = 'edsz',
     kKeyCodecID           = 'cdid',
 
+    //amffmpeg extended types
+    kKeyProgramName       = 'proN', // cstring
+
     kKeyBlockAlign        = 'bagn',
     kKeyAudioFlag         ='aufg',  // audio info reported from decoder to indicate special info
     kKeyDtsDecoderVer     ='dtsV',
