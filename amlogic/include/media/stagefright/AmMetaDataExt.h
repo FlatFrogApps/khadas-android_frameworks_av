@@ -61,6 +61,18 @@ enum {
     kKeyPCMDataEndian    = 'Pend',  // int32_t (OMX_ENDIANTYPE)
     kKeyPCMDataSigned    = 'Psgn',  // int32_t (OMX_NUMERICALDATATYPE)
 
+    // Keys to inner subtitle support
+    kKeyStreamTimeBaseNum           = 'tiBS',   //int32_t stream time base num
+    kKeyStreamTimeBaseDen           = 'tiDS',   //int32_t stream time base den
+    kKeyStreamStartTime             = 'stTS',   //int64_t stream start time
+    kKeyStreamCodecID               = 'cIDS',   //int32_t stream codec id
+    kKeyStreamCodecTag              = 'cTgS',   //int32_t stream codec tag
+    kKeyPktSize                     = 'sizP',   // int32_t avPacket size
+    kKeyPktPts                      = 'ptsP',   // int64_t avPacket pts
+    kKeyPktDts                      = 'dtsP',   // int64_t avPacket dts
+    kKeyPktDuration                 = 'durP',   // int32_t avPacket duration
+    kKeyPktConvergenceDuration      = 'cduP',   // int64_t avPacket convergence duration
+    kKeyPktFirstVPts                = 'VPts',   // int64_t first video pts
 };
 
 }  // namespace android
