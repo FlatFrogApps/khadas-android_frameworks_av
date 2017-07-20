@@ -4941,6 +4941,7 @@ audio_devices_t AudioPolicyManager::getDeviceAndMixForInputSource(audio_source_t
 
 audio_devices_t AudioPolicyManager::getDeviceForInputSource(audio_source_t inputSource)
 {
+	char huitong_remote_flag[128] = {0};
     for (size_t routeIndex = 0; routeIndex < mInputRoutes.size(); routeIndex++) {
          sp<SessionRoute> route = mInputRoutes.valueAt(routeIndex);
          if (inputSource == route->mSource && route->isActive()) {
@@ -4948,7 +4949,16 @@ audio_devices_t AudioPolicyManager::getDeviceForInputSource(audio_source_t input
          }
      }
 
-     return mEngine->getDeviceForInputSource(inputSource);
+     //return mEngine->getDeviceForInputSource(inputSource);
+	 property_get("persist.audio.huitong_remote.in", huitong_remote_flag, NULL);
+    if (!strcmp("enable", huitong_remote_flag)) {
+        property_set("persist.audio.huitong_remote.in", "disable");
+        ALOGI("MIC select huitong remote");
+        return AUDIO_DEVICE_IN_HUITONG;
+    }
+    else {
+        return mEngine->getDeviceForInputSource(inputSource);
+    }
 }
 
 float AudioPolicyManager::computeVolume(audio_stream_type_t stream,
