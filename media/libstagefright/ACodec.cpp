@@ -1806,6 +1806,19 @@ status_t ACodec::configureCodec(
         ALOGI(" mOMX->setParameter() OMX_IndexParamLowLatencyMode");
     }
     mLowLatencyMode = low_latency_mode;
+
+    int32_t decodec_param ;
+    if (msg->findInt32("decodec-param", &decodec_param)) {
+        OMX_INDEXTYPE index;
+        if (mOMX->getExtensionIndex(mNode,"OMX.amlogic.index.videoParam", &index) == OK) {
+            OMX_PARAM_U32TYPE config;
+            InitOMXParams(&config);
+            config.nU32 = (OMX_U32)decodec_param;
+            mOMX->setParameter(
+                    mNode, index,
+                    &config, sizeof(config));
+        }
+    }
     int32_t Is4k_osd = 0;
     if (msg->findInt32("4k-osd", &Is4k_osd)) {
         OMX_CONFIG_BOOLEANTYPE  def;
