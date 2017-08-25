@@ -378,36 +378,7 @@ status_t AudioTrack::set(
     // these below should probably come from the audioFlinger too...
     if (format == AUDIO_FORMAT_DEFAULT) {
         format = AUDIO_FORMAT_PCM_16_BIT;
-    } else if (format == AUDIO_FORMAT_IEC61937) { // HDMI pass-through?
-        mAttributes.flags |= AUDIO_OUTPUT_FLAG_IEC958_NONAUDIO;
-        //backport the AUDIO_FORMAT_IEC61937 from android N, here we
-        //detect the audio format from the certain sr/channel information.
-        //also we rewrite the AUDIO_FORMAT_IEC61937, therefore we
-       //do not need enable the new AUDIO_FORMAT_IEC61937 int the audiopolicy
-        //also in the audio HAL.
-        mAttributes.flags |= AUDIO_OUTPUT_FLAG_IEC958_NONAUDIO;
-        flags = (audio_output_flags_t) (flags | AUDIO_OUTPUT_FLAG_IEC958_NONAUDIO);
-        //align the frameCount to 64 byte align in case split mode is not enabled
-        frameCount &= ~63;
-        if (audio_channel_count_from_out_mask(channelMask) == 2 && (sampleRate == 192000 ||sampleRate == 176400)) {
-            format = AUDIO_FORMAT_E_AC3;
-            sampleRate /= 4;
-         }
-         else if (audio_channel_count_from_out_mask(channelMask) >= 6 && sampleRate == 192000)
-             format = AUDIO_FORMAT_DTS_HD;
-         else if (audio_channel_count_from_out_mask(channelMask) == 2 && sampleRate >= 32000 && sampleRate <= 48000) {
-             format =   AUDIO_FORMAT_AC3;
-             //here to workaround the dts pause issue when start to play,seems kodi apk have some avsync issue
-             // with different audiotrack buffer size
-            //TODO,need dig more
-             //size_t min_frameCount = 0;
-             //getMinFrameCount(&min_frameCount,streamType,sampleRate);
-             //if (frameCount >  min_frameCount*2)
-                 //frameCount =  min_frameCount*2;
-          }
-          ALOGI("convert format IEC61937 to 0x%x\n",format);
     }
-
     // validate parameters
     if (!audio_is_valid_format(format)) {
         ALOGE("Invalid format %#x", format);
@@ -1393,8 +1364,12 @@ status_t AudioTrack::createTrack_l()
                     mAfLatency, mAfFrameCount, mAfSampleRate, mSampleRate,
                     speed /*, 0 mNotificationsPerBufferReq*/);
         }
+
         if (frameCount < minFrameCount) {
-            frameCount = minFrameCount;
+              frameCount  = minFrameCount;
+              mNotificationFramesAct = mAfFrameCount;
+        }else if (frameCount > 2 * minFrameCount) {
+             mNotificationFramesAct = frameCount =  2* mAfFrameCount;
         }
     }
 
