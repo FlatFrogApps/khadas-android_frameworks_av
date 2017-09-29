@@ -378,6 +378,8 @@ status_t AudioTrack::set(
     // these below should probably come from the audioFlinger too...
     if (format == AUDIO_FORMAT_DEFAULT) {
         format = AUDIO_FORMAT_PCM_16_BIT;
+    }else if (format == AUDIO_FORMAT_IEC61937) { // HDMI pass-through?
+         mAttributes.flags |= AUDIO_OUTPUT_FLAG_IEC958_NONAUDIO;
     }
     // validate parameters
     if (!audio_is_valid_format(format)) {
@@ -1364,12 +1366,14 @@ status_t AudioTrack::createTrack_l()
                     mAfLatency, mAfFrameCount, mAfSampleRate, mSampleRate,
                     speed /*, 0 mNotificationsPerBufferReq*/);
         }
-
         if (frameCount < minFrameCount) {
-              frameCount  = minFrameCount;
-              mNotificationFramesAct = mAfFrameCount;
-        }else if (frameCount > 2 * minFrameCount) {
-             mNotificationFramesAct = frameCount =  2* mAfFrameCount;
+           frameCount  = minFrameCount;
+        }
+        if (mAttributes.flags & AUDIO_OUTPUT_FLAG_IEC958_NONAUDIO) {
+           mNotificationFramesAct = mAfFrameCount;
+           if (frameCount > 2 * minFrameCount) {
+                 mNotificationFramesAct = frameCount =  2* mAfFrameCount;
+           }
         }
     }
 
