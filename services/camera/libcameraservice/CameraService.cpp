@@ -440,6 +440,7 @@ Status CameraService::getNumberOfCameras(int32_t type, int32_t* numCameras) {
                 mNumberOfCameras = mModule->getNumberOfCameras();
                 mNumberOfNormalCameras = mNumberOfCameras;
                 ALOGI("CameraService::getNumberOfCameras() = %d",mNumberOfCameras);
+                onFirstRef();
             }
             *numCameras = mNumberOfNormalCameras;
             break;
@@ -449,6 +450,7 @@ Status CameraService::getNumberOfCameras(int32_t type, int32_t* numCameras) {
                 mNumberOfCameras = mModule->getNumberOfCameras();
                 mNumberOfNormalCameras = mNumberOfCameras;
                 ALOGI("CameraService::getNumberOfCameras() = %d",mNumberOfCameras);
+                onFirstRef();
             }
             *numCameras = mNumberOfCameras;
             break;
