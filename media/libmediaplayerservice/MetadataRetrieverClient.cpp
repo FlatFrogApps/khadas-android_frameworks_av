@@ -96,35 +96,38 @@ static sp<MediaMetadataRetrieverBase> createRetriever(player_type playerType)
         case NU_PLAYER:
         {
             #ifdef USE_FFPLAYER
-                ALOGD("Create Instance of RockMetaDataRetriever");
-                p =  new RK_MetadataRetriever;
+                if (property_get("cts_gts.status", value, NULL)
+                        && (!strcmp("1", value) || !strcasecmp("true", value))) {
+                    ALOGD("Create Instance of StagefrightMetaDataRetriever");
+                    p = new StagefrightMetadataRetriever;
+                }else{
+                    ALOGD("Create Instance of RockMetaDataRetriever");
+                    p =  new RK_MetadataRetriever;
+                }
             #else
                 ALOGD("Create Instance of StagefrightMetaDataRetriever");
                 p = new StagefrightMetadataRetriever;
             #endif
-	        if (property_get("cts_gts.status", value, NULL)
-		        && (!strcmp("1", value) || !strcasecmp("true", value))) {
-                ALOGD("Create Instance of StagefrightMetaDataRetriever");
-                p = new StagefrightMetadataRetriever;
-	        }
+
             break;
         }
         default:
             // TODO:
             // support for TEST_PLAYER
-            #ifdef USE_FFPLAYER
-                ALOGD("Create Instance of RockMetaDataRetriever, unknowType =%d; FF_PLAYER=%d; NU_PLAYER=%d", 
-                                                                 playerType, FF_PLAYER, NU_PLAYER);
-                p =  new RK_MetadataRetriever;
-            #else
-                ALOGE("player type %d is not supported",  playerType);
-            #endif
-	        if (property_get("cts_gts.status", value, NULL)
-		        && (!strcmp("1", value) || !strcasecmp("true", value))) {
+        #ifdef USE_FFPLAYER
+            if (property_get("cts_gts.status", value, NULL)
+                && (!strcmp("1", value) || !strcasecmp("true", value))) {
                 ALOGD("Create Instance of StagefrightMetaDataRetriever");
                 p = new StagefrightMetadataRetriever;
-	        }
-            break;
+            }else{
+                ALOGD("Create Instance of RockMetaDataRetriever, unknowType =%d; FF_PLAYER=%d; NU_PLAYER=%d", playerType, FF_PLAYER, NU_PLAYER);
+                p =  new RK_MetadataRetriever;
+            }
+        #else
+            ALOGE("player type %d is not supported",  playerType);
+        #endif
+
+        break;
     }
     if (p == NULL) {
         ALOGE("failed to create a retriever object");
