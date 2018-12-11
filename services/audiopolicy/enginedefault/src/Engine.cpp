@@ -559,17 +559,41 @@ audio_devices_t Engine::getDeviceForStrategyInt(routing_strategy strategy,
 
     char value[PROPERTY_VALUE_MAX];
     property_get("media.audio.device_policy", value, "");
-    if (strstr(value, "hdmi")) {
-        ALOGD("set audio policy to hdmi, availableOutputDevicesType : 0x%x", availableOutputDevicesType);
-        if (availableOutputDevicesType & AUDIO_DEVICE_OUT_HDMI) {
-            ALOGD("set audio policy to hdmi succeed");
-            device = AUDIO_DEVICE_OUT_HDMI;
+    if (value[0]) {
+        uint32_t new_device = AUDIO_DEVICE_NONE;
+        if (strstr(value, "hdmi")) {
+            ALOGD("set audio policy to hdmi, availableOutputDevicesType : 0x%x", availableOutputDevicesType);
+            if (availableOutputDevicesType & AUDIO_DEVICE_OUT_HDMI) {
+                ALOGD("set audio policy to hdmi succeed");
+                new_device |= AUDIO_DEVICE_OUT_HDMI;
+            }
         }
-    } else if (strstr(value, "usb")) {
-        ALOGD("set audio policy to usb, availableOutputDevicesType : 0x%x", availableOutputDevicesType);
-        if (availableOutputDevicesType & AUDIO_DEVICE_OUT_USB_DEVICE) {
-            ALOGD("set audio policy to usb succeed");
-            device = AUDIO_DEVICE_OUT_USB_DEVICE;
+        if (strstr(value, "speaker")) {
+            ALOGD("set audio policy to speaker, availableOutputDevicesType : 0x%x", availableOutputDevicesType);
+            if (availableOutputDevicesType & AUDIO_DEVICE_OUT_SPEAKER) {
+                ALOGD("set audio policy to speaker succeed");
+                new_device |= AUDIO_DEVICE_OUT_SPEAKER;
+            }
+        }
+        if (strstr(value, "usb")) {
+            ALOGD("set audio policy to usb, availableOutputDevicesType : 0x%x", availableOutputDevicesType);
+            if (availableOutputDevicesType & AUDIO_DEVICE_OUT_USB_DEVICE) {
+                ALOGD("set audio policy to usb succeed");
+                new_device |= AUDIO_DEVICE_OUT_USB_DEVICE;
+            }
+        }
+        if (strstr(value, "bluetooth")) {
+            ALOGD("set audio policy to bluetooth, availableOutputDevicesType : 0x%x", availableOutputDevicesType);
+            if (availableOutputDevicesType & AUDIO_DEVICE_OUT_BLUETOOTH_A2DP)
+                new_device |= AUDIO_DEVICE_OUT_BLUETOOTH_A2DP;
+            else if (availableOutputDevicesType & AUDIO_DEVICE_OUT_BLUETOOTH_A2DP_HEADPHONES)
+                new_device |= AUDIO_DEVICE_OUT_BLUETOOTH_A2DP_HEADPHONES;
+            else if (availableOutputDevicesType & AUDIO_DEVICE_OUT_BLUETOOTH_A2DP_SPEAKER)
+                new_device |= AUDIO_DEVICE_OUT_BLUETOOTH_A2DP_SPEAKER;
+        }
+
+        if (new_device != AUDIO_DEVICE_NONE) {
+            device = new_device;
         }
     }
     ALOGVV("getDeviceForStrategy() strategy %d, device %x", strategy, device);
@@ -665,7 +689,9 @@ audio_devices_t Engine::getDeviceForInputSource(audio_source_t inputSource) cons
         }
         break;
     case AUDIO_SOURCE_CAMCORDER:
-        if (availableDeviceTypes & AUDIO_DEVICE_IN_BACK_MIC) {
+        if (availableDeviceTypes & AUDIO_DEVICE_IN_HDMI) {
+            device = AUDIO_DEVICE_IN_HDMI;
+        } else if (availableDeviceTypes & AUDIO_DEVICE_IN_BACK_MIC) {
             device = AUDIO_DEVICE_IN_BACK_MIC;
         } else if (availableDeviceTypes & AUDIO_DEVICE_IN_BUILTIN_MIC) {
             device = AUDIO_DEVICE_IN_BUILTIN_MIC;
