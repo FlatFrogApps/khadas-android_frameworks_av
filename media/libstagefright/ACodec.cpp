@@ -1111,24 +1111,25 @@ status_t ACodec::configureOutputBuffersFromNativeWindow(
     for (OMX_U32 extraBuffers = 2 + 1; /* condition inside loop */; extraBuffers--) {
         OMX_U32 newBufferCount =
             def.nBufferCountMin + *minUndequeuedBuffers + extraBuffers;
-        if (mGtsExoPlayer && newBufferCount >= 20)
-            def.nBufferCountActual = 20;
-        else
-            def.nBufferCountActual = newBufferCount;
+        if(def.nBufferCountActual < newBufferCount || (mGtsExoPlayer && newBufferCount >= 20)){
+            def.nBufferCountActual = mGtsExoPlayer ? MIN(20, newBufferCount) : newBufferCount;
+            err = mOMX->setParameter(
+                    mNode, OMX_IndexParamPortDefinition, &def, sizeof(def));
 
-        err = mOMX->setParameter(
-                mNode, OMX_IndexParamPortDefinition, &def, sizeof(def));
+            if (err == OK) {
+                *minUndequeuedBuffers += extraBuffers;
+                break;
+            }
 
-        if (err == OK) {
+            ALOGV("[%s] setting nBufferCountActual to %u failed: %d",
+                    mComponentName.c_str(), newBufferCount, err);
+            /* exit condition */
+            if (extraBuffers == 0) {
+                return err;
+            }
+        }else{
             *minUndequeuedBuffers += extraBuffers;
             break;
-        }
-
-        ALOGW("[%s] setting nBufferCountActual to %u failed: %d",
-                mComponentName.c_str(), newBufferCount, err);
-        /* exit condition */
-        if (extraBuffers == 0) {
-            return err;
         }
     }
 
