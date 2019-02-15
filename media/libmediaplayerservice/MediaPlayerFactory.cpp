@@ -171,13 +171,6 @@ player_type MediaPlayerFactory::getPlayerType(const sp<IMediaPlayer>& client,
         return NU_PLAYER;
     }
 
-    if(!strncasecmp("http://", url, 7)){
-        char value[PROPERTY_VALUE_MAX];
-        property_get("ro.target.product",value, NULL);
-        if(!strcasecmp("tablet", value))
-            return NU_PLAYER;
-    }
-
     if (!strncasecmp("iptv://", url, 7)) {
         return NU_PLAYER;
     }
