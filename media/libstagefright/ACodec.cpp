@@ -65,12 +65,6 @@ enum {
     kMaxIndicesToCheck = 32, // used when enumerating supported formats and profiles
 };
 
-enum {
-    GRALLOC_USAGE_NEED_STRIDE_OF_ODD_NUMBER_TIMES_OF_256 = 0x00400000U,
-    GRALLOC_USAGE_NEED_STRIDE_128_ALIGNED                = 0x00800000U,
-    GRALLOC_USAGE_NEED_STRIDE_16_ALIGNED                 = 0x00C00000U,
-};
-
 // OMX errors are directly mapped into status_t range if
 // there is no corresponding MediaError status code.
 // Use the statusFromOMXError(int32_t omxError) function.
@@ -111,20 +105,6 @@ static inline status_t makeNoSideEffectStatus(status_t err) {
     default:
         return err;
     }
-}
-
-static inline int getStrideUsage(int width, int stride) {
-    int strideUsage = 0;
-
-    if (stride == (((width + 255) & (~255)) | (256))) {
-        strideUsage = GRALLOC_USAGE_NEED_STRIDE_OF_ODD_NUMBER_TIMES_OF_256;
-    } else if (stride == ((width + 127) & (~127))) {
-        strideUsage = GRALLOC_USAGE_NEED_STRIDE_128_ALIGNED;
-    } else {
-        strideUsage = GRALLOC_USAGE_NEED_STRIDE_16_ALIGNED;
-    }
-
-    return strideUsage;
 }
 
 struct MessageList : public RefBase {
@@ -1041,12 +1021,7 @@ status_t ACodec::setupNativeWindowSizeFormatAndUsage(
         default:
             break;
     }
-
-    // Transmit for gralloc buffer allocation
-    int strideUsage = 0;
-    strideUsage = getStrideUsage(def.format.video.nFrameWidth, def.format.video.nStride);
-    usage |= strideUsage;
-
+    
     *finalUsage = usage;
 
     memset(&mLastNativeWindowCrop, 0, sizeof(mLastNativeWindowCrop));
@@ -1067,7 +1042,7 @@ status_t ACodec::setupNativeWindowSizeFormatAndUsage(
     ALOGV("gralloc usage: %#x(OMX) => %#x(ACodec)", omxUsage, usage);
     return setNativeWindowSizeFormatAndUsage(
             nativeWindow,
-            def.format.video.nFrameWidth,
+            def.format.video.nStride,
             def.format.video.nSliceHeight,
             def.format.video.eColorFormat,
             mRotationDegrees,
