@@ -40,6 +40,7 @@ cc_library_shared {
     name: "libmp4extractor",
     defaults: ["libmp4extractor_defaults"],
 
+    compile_multilib: "both",
     sanitize: {
         cfi: true,
         misc_undefined: [
