@@ -189,10 +189,6 @@ player_type MediaPlayerFactory::getPlayerType(const sp<IMediaPlayer>& client,
         return NU_PLAYER;
     }
 
-    if (strstr(filePath.string(), ".mp3")) {
-        return NU_PLAYER;
-    }
-
     if (strstr(filePath.string(), ".mid")) {
         return NU_PLAYER;
     }
