@@ -23,6 +23,9 @@ LOCAL_SHARED_LIBRARIES := \
         libicuuc \
         android.hardware.media.omx@1.0 \
 
+LOCAL_REQUIRED_MODULES += \
+        libmp4extractor \
+
 LOCAL_STATIC_LIBRARIES := \
         libicuandroid_utils \
         libregistermsext
