@@ -2009,6 +2009,7 @@ status_t ACodec::configureCodec(
         int32_t rotationDegrees;
         if (msg->findInt32("rotation-degrees", &rotationDegrees)) {
             mRotationDegrees = rotationDegrees;
+            msg->setInt32("vendor.rotation-angle.angle", mRotationDegrees);
         } else {
             mRotationDegrees = 0;
         }
