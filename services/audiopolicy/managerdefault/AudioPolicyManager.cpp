@@ -1984,7 +1984,7 @@ status_t AudioPolicyManager::getInputForAttr(const audio_attributes_t *attr,
     }
 
     // Explicit routing?
-    sp<DeviceDescriptor> explicitRoutingDevice = 
+    sp<DeviceDescriptor> explicitRoutingDevice =
             mAvailableInputDevices.getDeviceFromId(*selectedDeviceId);
 
     // special case for mmap capture: if an input IO handle is specified, we reuse this input if
@@ -2166,7 +2166,7 @@ audio_io_handle_t AudioPolicyManager::getInputForDevice(const sp<DeviceDescripto
             profileFlags = AUDIO_INPUT_FLAG_NONE; // retry
         } else { // fail
             ALOGW("%s could not find profile for device %s, sampling rate %u, format %#x, "
-                  "channel mask 0x%X, flags %#x", __func__, device->toString().c_str(), 
+                  "channel mask 0x%X, flags %#x", __func__, device->toString().c_str(),
                   config->sample_rate, config->format, config->channel_mask, flags);
             return input;
         }
@@ -5048,7 +5048,7 @@ status_t AudioPolicyManager::checkInputsForDevice(const sp<DeviceDescriptor>& de
             } // endif input != 0
 
             if (input == AUDIO_IO_HANDLE_NONE) {
-                ALOGW("%s could not open input for device %s", __func__,  
+                ALOGW("%s could not open input for device %s", __func__,
                        device->toString().c_str());
                 profiles.removeAt(profile_index);
                 profile_index--;
@@ -6162,7 +6162,7 @@ status_t AudioPolicyManager::checkAndSetVolume(IVolumeCurves &curves,
         bool            speakerGainApplied = false;
         bool            bootVideoRunning = property_get_int32("service.bootvideo.exit", 0) == 1;
 
-        if (curDevice == AUDIO_DEVICE_OUT_SPEAKER &&
+        if ((curDevice == AUDIO_DEVICE_OUT_SPEAKER || curDevice == AUDIO_DEVICE_OUT_WIRED_HEADPHONE) &&
             (outputDesc->isStrategyActive(streamToStrategy(AUDIO_STREAM_MUSIC)) || bootVideoRunning)) {
             //ignoring the "index" passed as argument and always use MUSIC stream index
             //for all stream types works on TV because all stream types are aliases of MUSIC.
@@ -6188,7 +6188,7 @@ status_t AudioPolicyManager::checkAndSetVolume(IVolumeCurves &curves,
             speakerGainApplied = outputDesc->updateGain(curDevice,
                                         musicVolumeDb, minMusicVolumeDb, maxMusicVolumeDb);
         }
-        if (curDevice == AUDIO_DEVICE_OUT_HDMI_ARC || curDevice == AUDIO_DEVICE_OUT_WIRED_HEADPHONE ||
+        if (curDevice == AUDIO_DEVICE_OUT_HDMI_ARC ||
             (speakerGainApplied && (curDevice & AUDIO_DEVICE_OUT_SPEAKER) != 0)) {
             volumeDb = 0.0f;
         }
