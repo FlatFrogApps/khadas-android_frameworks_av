@@ -6159,11 +6159,9 @@ status_t AudioPolicyManager::checkAndSetVolume(IVolumeCurves &curves,
         DeviceTypeSet   curSrcDevicesVector = deviceTypesFromBitMask(getDevicesForStream(AUDIO_STREAM_MUSIC));
         audio_devices_t curDevice = Volume::getDeviceForVolume(curSrcDevicesVector);
         DeviceTypeSet   curDeviceVector = deviceTypesFromBitMask(curDevice);
-        bool            speakerGainApplied = false;
         bool            bootVideoRunning = property_get_int32("service.bootvideo.exit", 0) == 1;
 
-        if ((curDevice == AUDIO_DEVICE_OUT_SPEAKER || curDevice == AUDIO_DEVICE_OUT_WIRED_HEADPHONE) &&
-            (outputDesc->isStrategyActive(streamToStrategy(AUDIO_STREAM_MUSIC)) || bootVideoRunning)) {
+        if (curDevice == AUDIO_DEVICE_OUT_SPEAKER || curDevice == AUDIO_DEVICE_OUT_WIRED_HEADPHONE) {
             //ignoring the "index" passed as argument and always use MUSIC stream index
             //for all stream types works on TV because all stream types are aliases of MUSIC.
             device_category devCategory = Volume::getDeviceCategory(curDeviceVector);
@@ -6185,11 +6183,9 @@ status_t AudioPolicyManager::checkAndSetVolume(IVolumeCurves &curves,
                 minMusicVolumeDb = -10000.0f;
                 musicVolumeDb = -1837.0f;
             }
-            speakerGainApplied = outputDesc->updateGain(curDevice,
-                                        musicVolumeDb, minMusicVolumeDb, maxMusicVolumeDb);
-        }
-        if (curDevice == AUDIO_DEVICE_OUT_HDMI_ARC ||
-            (speakerGainApplied && (curDevice & AUDIO_DEVICE_OUT_SPEAKER) != 0)) {
+            outputDesc->updateGain(curDevice, musicVolumeDb, minMusicVolumeDb, maxMusicVolumeDb);
+            volumeDb = 0.0f;
+        } else if (curDevice == AUDIO_DEVICE_OUT_HDMI_ARC) {
             volumeDb = 0.0f;
         }
     }

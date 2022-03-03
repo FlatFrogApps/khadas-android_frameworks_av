@@ -239,8 +239,10 @@ static inline audio_devices_t apm_extract_one_audio_device(
         if (usbDevices.empty() == false) {
             return usbDevices[0];
         }
+        if (deviceTypes.count(AUDIO_DEVICE_OUT_WIRED_HEADPHONE) != 0) {
+            return AUDIO_DEVICE_OUT_WIRED_HEADPHONE;
         /*[Amlogic end]----------------------------------------------------------*/
-        if (deviceTypes.count(AUDIO_DEVICE_OUT_SPEAKER) != 0) {
+        } else if (deviceTypes.count(AUDIO_DEVICE_OUT_SPEAKER) != 0) {
             return AUDIO_DEVICE_OUT_SPEAKER;
         } else if (deviceTypes.count(AUDIO_DEVICE_OUT_SPEAKER_SAFE) != 0) {
             return AUDIO_DEVICE_OUT_SPEAKER_SAFE;
