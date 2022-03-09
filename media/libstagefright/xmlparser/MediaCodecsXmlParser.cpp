@@ -1482,7 +1482,7 @@ const char *MEDIA_MIMETYPE_VIDEO_WMV3 = "video/wmv3";
 const char *MEDIA_MIMETYPE_VIDEO_MSWMV3 = "video/x-ms-wmv";
 const char *MEDIA_MIMETYPE_VIDEO_AVS = "video/avs";
 const char *MEDIA_MIMETYPE_VIDEO_AVS2 = "video/avs2";
-const char *MEDIA_MIMETYPE_AUDIO_DTS = "audio/dtshd";
+const char *MEDIA_MIMETYPE_AUDIO_DTS = "audio/vnd.dts";
 const char *MEDIA_MIMETYPE_AUDIO_MP1 = "audio/mp1";
 const char *MEDIA_MIMETYPE_AUDIO_MP2 = "audio/mp2";
 const char *MEDIA_MIMETYPE_AUDIO_ADPCM_IMA = "audio/adpcm-ima";
@@ -1493,7 +1493,8 @@ const char *MEDIA_MIMETYPE_AUDIO_AAC_LATM = "audio/aac-latm";
 const char *MEDIA_MIMETYPE_AUDIO_ADTS_PROFILE = "audio/adts";
 const char *MEDIA_MIMETYPE_AUDIO_WMA = "audio/wma";
 const char *MEDIA_MIMETYPE_AUDIO_WMAPRO = "audio/wmapro";
-const char *MEDIA_MIMETYPE_AUDIO_DTSHD  = "audio/dtshd";
+const char *MEDIA_MIMETYPE_AUDIO_DTSHD  = "audio/vnd.dts.hd";
+const char *MEDIA_MIMETYPE_AUDIO_DTS_EXPRESS  = "audio/vnd.dts.hd;profile=lbr";
 const char *MEDIA_MIMETYPE_AUDIO_TRUEHD = "audio/truehd";
 const char *MEDIA_MIMETYPE_AUDIO_AC3 = "audio/ac3";
 const char *MEDIA_MIMETYPE_AUDIO_EC3 = "audio/eac3";
@@ -1512,8 +1513,12 @@ const char*  AGetComponentRole(bool isEncoder, const char *mime) {
     };
 
     static const MimeToRole kMimeToRole[] = {
+         {MEDIA_MIMETYPE_AUDIO_DTS,
+         "audio_decoder.dts",  "audio_encoder.dts" },
          {MEDIA_MIMETYPE_AUDIO_DTSHD,
          "audio_decoder.dtshd",  "audio_encoder.dtshd" },
+         {MEDIA_MIMETYPE_AUDIO_DTS_EXPRESS,
+         "audio_decoder.dtse",  "audio_encoder.dtse" },
          { MEDIA_MIMETYPE_AUDIO_AAC_ADIF,
          "audio_decoder.adif", "audio_encoder.adif" },
          { MEDIA_MIMETYPE_AUDIO_AAC_LATM,
