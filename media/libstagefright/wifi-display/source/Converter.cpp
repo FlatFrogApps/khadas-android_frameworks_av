@@ -710,11 +710,11 @@ sp<ABuffer> Converter::prependCSD(const sp<ABuffer> &accessUnit) const {
 status_t Converter::doMoreWork() {
     status_t err;
 
-    mFrameCounts++;
-    if (mFrameCounts < 20 && mFrameCounts % 5 == 0) {
+    if (mFrameCounts < 50 && mFrameCounts % 10 == 0) {
         mEncoder->requestIDRFrame();
         ALOGI("start cast and request IDR Frame");
     }
+    mFrameCounts++;
 
     if (!(mFlags & FLAG_USE_SURFACE_INPUT)) {
         for (;;) {
