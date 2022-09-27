@@ -242,14 +242,17 @@ static inline audio_devices_t apm_extract_one_audio_device(
         if (deviceTypes.count(AUDIO_DEVICE_OUT_WIRED_HEADPHONE) != 0) {
             return AUDIO_DEVICE_OUT_WIRED_HEADPHONE;
         /*[Amlogic end]----------------------------------------------------------*/
-        } else if (deviceTypes.count(AUDIO_DEVICE_OUT_SPEAKER) != 0) {
-            return AUDIO_DEVICE_OUT_SPEAKER;
-        } else if (deviceTypes.count(AUDIO_DEVICE_OUT_SPEAKER_SAFE) != 0) {
-            return AUDIO_DEVICE_OUT_SPEAKER_SAFE;
+        /*[Amlogic start]+++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+        /* Change-Id: Ib224a60546ab5e8e46b528bd60f70c9274da0858 */
         } else if (deviceTypes.count(AUDIO_DEVICE_OUT_HDMI_ARC) != 0) {
             return AUDIO_DEVICE_OUT_HDMI_ARC;
         } else if (deviceTypes.count(AUDIO_DEVICE_OUT_AUX_LINE) != 0) {
             return AUDIO_DEVICE_OUT_AUX_LINE;
+        } else if (deviceTypes.count(AUDIO_DEVICE_OUT_SPEAKER) != 0) {
+            return AUDIO_DEVICE_OUT_SPEAKER;
+        } else if (deviceTypes.count(AUDIO_DEVICE_OUT_SPEAKER_SAFE) != 0) {
+            return AUDIO_DEVICE_OUT_SPEAKER_SAFE;
+       /*[Amlogic end]----------------------------------------------------------*/
         } else if (deviceTypes.count(AUDIO_DEVICE_OUT_SPDIF) != 0) {
             return AUDIO_DEVICE_OUT_SPDIF;
         } else {
