@@ -34,6 +34,7 @@
 #include <media/AudioContainers.h>
 #include <utils/String8.h>
 #include <utils/Log.h>
+#include <cutils/properties.h>
 
 namespace android
 {
@@ -540,13 +541,18 @@ sp<DeviceDescriptor> Engine::getDeviceForInputSource(audio_source_t inputSource)
                     AUDIO_DEVICE_IN_BLUETOOTH_SCO_HEADSET, String8(""), AUDIO_FORMAT_DEFAULT);
             if (device != nullptr) break;
         }
-        device = availableDevices.getFirstExistingDevice({
+		if (property_get_int32("vendor.media.hdmi.camera", 0) == 1) {
+             ALOGI("%s: hdmi camera is recording", __func__);
+             device = availableDevices.getFirstExistingDevice({AUDIO_DEVICE_IN_HDMI});
+        } else {
+             device = availableDevices.getFirstExistingDevice({
                 AUDIO_DEVICE_IN_WIRED_HEADSET, AUDIO_DEVICE_IN_USB_HEADSET,
                 /*[Amlogic start]+++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
                 /* Change-Id: If40b3570059ef2df207e9116889fe9f1d8ce39ab */
                 AUDIO_DEVICE_IN_USB_DEVICE, AUDIO_DEVICE_IN_BLUETOOTH_BLE,
                 AUDIO_DEVICE_IN_BUILTIN_MIC});
                 /*[Amlogic end]----------------------------------------------------------*/
+		}
         break;
 
     case AUDIO_SOURCE_VOICE_COMMUNICATION:
@@ -620,9 +626,14 @@ sp<DeviceDescriptor> Engine::getDeviceForInputSource(audio_source_t inputSource)
         break;
     case AUDIO_SOURCE_CAMCORDER:
         // For a device without built-in mic, adding usb device
-        device = availableDevices.getFirstExistingDevice({
+		if (property_get_int32("vendor.media.hdmi.camera", 0) == 1) {
+             ALOGI("%s: hdmi camera is recording", __func__);
+             device = availableDevices.getFirstExistingDevice({AUDIO_DEVICE_IN_HDMI});
+        } else {
+             device = availableDevices.getFirstExistingDevice({
                 AUDIO_DEVICE_IN_USB_DEVICE, AUDIO_DEVICE_IN_BACK_MIC,
                 AUDIO_DEVICE_IN_BUILTIN_MIC});
+		}
         break;
     case AUDIO_SOURCE_VOICE_DOWNLINK:
     case AUDIO_SOURCE_VOICE_CALL:
